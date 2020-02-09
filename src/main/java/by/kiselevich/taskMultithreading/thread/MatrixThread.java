@@ -32,11 +32,13 @@ public class MatrixThread extends Thread {
         int index = (int)(Math.random() * matrix.getN());
         if (isRowChosen()) {
             while (index == diagonalIndex || !matrix.setValue(diagonalIndex, index, id)) {
+                LOG.trace("thread " + this.getName() + " trying ");
                 index = (int)(Math.random() * matrix.getN());
             }
             LOG.trace("thread " + this.getName() + " choose " + diagonalIndex + ";" + index);
         } else {
             while (index == diagonalIndex || !matrix.setValue(index, diagonalIndex, id)) {
+                LOG.trace("thread " + this.getName() + " trying ");
                 index = (int)(Math.random() * matrix.getN());
             }
             LOG.trace("thread " + this.getName() + " choose " + index + ";" + diagonalIndex);
