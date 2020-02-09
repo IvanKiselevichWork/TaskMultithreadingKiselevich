@@ -17,7 +17,7 @@ public class Matrix {
         data = new int[n][n];
         locks = new Lock[n][n];
         isUsed = new boolean[n][n];
-        for(int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 locks[i][j] = new ReentrantLock();
                 isUsed[i][j] = false;
@@ -26,7 +26,7 @@ public class Matrix {
     }
 
     public void resetUseControl() {
-        for(int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 isUsed[i][j] = false;
             }
@@ -47,10 +47,14 @@ public class Matrix {
 
     public boolean setValue(int i, int j, int value) {
         if (i < n && j < n) {
-            if (!isUsed[i][j]) {
-                isUsed[i][j] = true;
-                data[i][j] = value;
-                return true;
+            if (locks[i][j].tryLock()) {
+                if (!isUsed[i][j]) {
+                    isUsed[i][j] = true;
+                    data[i][j] = value;
+                    locks[i][j].unlock();
+                    return true;
+                }
+                locks[i][j].unlock();
             }
         }
         return false;
