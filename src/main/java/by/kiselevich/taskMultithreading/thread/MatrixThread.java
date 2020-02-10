@@ -49,7 +49,7 @@ public class MatrixThread extends Thread {
             columnSum += matrix.getValue(diagonalIndex, i);
         }
 
-        LOG.trace("thread " + getName() + " sum = " + (rowSum + columnSum));
+        LOG.trace("thread " + getName() + " sum = " + (rowSum + columnSum - id));
     }
 
     private boolean isRowChosen() {
