@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 public class Runner {
     private final static Logger LOG = LogManager.getLogger(Runner.class);
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         Thread[] threads = new Thread[ConstantValues.N];
         int id = 0;
         for (int i = 0; i < ConstantValues.Y; i++) {
@@ -21,7 +21,11 @@ public class Runner {
                 threads[j].start();
             }
             for (int j = 0; j < ConstantValues.N; j++) {
-                threads[j].join();
+                try {
+                    threads[j].join();
+                } catch (InterruptedException e) {
+                    LOG.warn(e);
+                }
             }
             LOG.trace(Matrix.getInstance().toString());
             Matrix.getInstance().resetUseControl();
