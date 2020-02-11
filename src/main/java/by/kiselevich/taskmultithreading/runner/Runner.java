@@ -15,9 +15,9 @@ import java.net.URL;
 import java.util.concurrent.CountDownLatch;
 
 public class Runner {
-    private final static Logger LOG = LogManager.getLogger(Runner.class);
-    private final static String OUTPUT_FILENAME = "output.txt";
-    private final static String INPUT_FILENAME = "input.txt";
+    private static final Logger LOG = LogManager.getLogger(Runner.class);
+    private static final String OUTPUT_FILENAME = "output.txt";
+    private static final String INPUT_FILENAME = "input.txt";
 
     private static File outputFile = new File(OUTPUT_FILENAME);
     private static File inputFile = null;
@@ -51,6 +51,7 @@ public class Runner {
             matrixInitiator.join();
         } catch (InterruptedException e) {
             LOG.warn(e);
+            Thread.currentThread().interrupt();
         }
 
         MatrixChangerThread[] threads = new MatrixChangerThread[n];
@@ -69,6 +70,7 @@ public class Runner {
                     threads[j].join();
                 } catch (InterruptedException e) {
                     LOG.warn(e);
+                    Thread.currentThread().interrupt();
                 }
             }
 
@@ -79,6 +81,7 @@ public class Runner {
                 matrixReseter.join();
             } catch (InterruptedException e) {
                 LOG.warn(e);
+                Thread.currentThread().interrupt();
             }
 
             Thread writer = new MatrixAndThreadSumWriterThread(outputFile, threads);
@@ -87,6 +90,7 @@ public class Runner {
                 writer.join();
             } catch (InterruptedException e) {
                 LOG.warn(e);
+                Thread.currentThread().interrupt();
             }
         }
     }
