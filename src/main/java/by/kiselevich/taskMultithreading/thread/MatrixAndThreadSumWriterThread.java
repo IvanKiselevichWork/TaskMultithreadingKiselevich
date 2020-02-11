@@ -9,13 +9,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class MatrixWriterThread extends Thread {
+public class MatrixAndThreadSumWriterThread extends Thread {
 
-    private static final Logger LOG = LogManager.getLogger(MatrixWriterThread.class);
+    private static final Logger LOG = LogManager.getLogger(MatrixAndThreadSumWriterThread.class);
 
     private File file;
 
-    public MatrixWriterThread(File file) {
+    public MatrixAndThreadSumWriterThread(File file) {
         this.file = file;
     }
 
