@@ -41,13 +41,13 @@ public class Runner {
         MatrixChangerThread[] threads = new MatrixChangerThread[ConstantValues.N];
         int id = 0;
         for (int i = 0; i < ConstantValues.Y; i++) {
+
             CountDownLatch latch = new CountDownLatch(ConstantValues.N);
             for (int j = 0; j < ConstantValues.N; j++) {
                 threads[j] = new MatrixChangerThread(id++, latch);
-            }
-            for (int j = 0; j < ConstantValues.N; j++) {
                 threads[j].start();
             }
+
             for (int j = 0; j < ConstantValues.N; j++) {
                 try {
                     threads[j].join();
@@ -55,8 +55,10 @@ public class Runner {
                     LOG.warn(e);
                 }
             }
+
             LOG.trace(Matrix.getInstance().toString());
             Matrix.getInstance().resetUseControl();
+
             Thread writer = new MatrixAndThreadSumWriterThread(outputFile, threads);
             writer.start();
             try {
