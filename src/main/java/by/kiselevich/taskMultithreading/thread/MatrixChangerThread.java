@@ -4,16 +4,20 @@ import by.kiselevich.taskMultithreading.entity.Matrix;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.concurrent.CountDownLatch;
+
 public class MatrixChangerThread extends Thread {
 
     private static final Logger LOG = LogManager.getLogger(MatrixChangerThread.class);
 
     private int id;
     private int sum;
+    private CountDownLatch latch;
 
-    public MatrixChangerThread(int id) {
+    public MatrixChangerThread(int id, CountDownLatch latch) {
         super(String.valueOf(id));
         this.id = id;
+        this.latch = latch;
     }
 
     @Override
@@ -42,6 +46,12 @@ public class MatrixChangerThread extends Thread {
             LOG.trace("thread " + this.getName() + " choose " + index + ";" + diagonalIndex);
         }
 
+        latch.countDown();
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            LOG.warn(e);
+        }
         sum = calculateSumOfRowAndColumn(diagonalIndex);
 
         LOG.trace("thread " + getName() + " sum = " + sum);

@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.concurrent.CountDownLatch;
 
 public class Runner {
     private final static Logger LOG = LogManager.getLogger(Runner.class);
@@ -40,8 +41,9 @@ public class Runner {
         MatrixChangerThread[] threads = new MatrixChangerThread[ConstantValues.N];
         int id = 0;
         for (int i = 0; i < ConstantValues.Y; i++) {
+            CountDownLatch latch = new CountDownLatch(ConstantValues.N);
             for (int j = 0; j < ConstantValues.N; j++) {
-                threads[j] = new MatrixChangerThread(id++);
+                threads[j] = new MatrixChangerThread(id++, latch);
             }
             for (int j = 0; j < ConstantValues.N; j++) {
                 threads[j].start();

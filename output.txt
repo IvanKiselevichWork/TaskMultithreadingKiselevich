@@ -1,33 +1,33 @@
 
-   2   0   4   2   0
-   0   3   0   0   0
-   0   0   4   0   0
-   0   0   1   1   0
-   0   3   0   0   0
-thread 0 sum = 3
-thread 1 sum = 4
-thread 2 sum = 8
+   3   0   0   0   0
+   0   0   0   0   0
+   0   0   2   0   0
+   3   0   2   4   4
+   0   1   0   0   1
+thread 0 sum = 1
+thread 1 sum = 6
+thread 2 sum = 4
 thread 3 sum = 6
-thread 4 sum = 9
+thread 4 sum = 13
 
-   8   8   4   2   0
-   0   9   0   0   0
-   0   0   7   0   0
-   0   0   7   6   6
-   0   9   0   5   5
-thread 5 sum = 19
-thread 6 sum = 26
-thread 7 sum = 18
-thread 8 sum = 22
-thread 9 sum = 26
+   9   0   0   9   8
+   0   7   5   0   0
+   0   0   5   0   0
+   3   7   2   6   6
+   0   1   0   0   8
+thread 5 sum = 12
+thread 6 sum = 33
+thread 7 sum = 20
+thread 8 sum = 23
+thread 9 sum = 29
 
-  10  10   4   2  12
-   0  13   0   0  13
-  14   0  14   0   0
-  11   0   7  11   6
-   0   9   0   5  12
-thread 10 sum = 63
-thread 11 sum = 42
-thread 12 sum = 57
-thread 13 sum = 45
-thread 14 sum = 39
+  13  13   0   9   8
+   0  11   5   0   0
+  12   0  12   0  10
+   3   7   2  14  14
+   0  11   0   0  10
+thread 10 sum = 53
+thread 11 sum = 47
+thread 12 sum = 41
+thread 13 sum = 58
+thread 14 sum = 49
