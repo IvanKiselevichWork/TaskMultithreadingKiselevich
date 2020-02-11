@@ -14,9 +14,11 @@ public class MatrixAndThreadSumWriterThread extends Thread {
     private static final Logger LOG = LogManager.getLogger(MatrixAndThreadSumWriterThread.class);
 
     private File file;
+    private MatrixChangerThread[] threads;
 
-    public MatrixAndThreadSumWriterThread(File file) {
+    public MatrixAndThreadSumWriterThread(File file, MatrixChangerThread[] threads) {
         this.file = file;
+        this.threads = threads;
     }
 
     @Override
@@ -24,8 +26,14 @@ public class MatrixAndThreadSumWriterThread extends Thread {
         Matrix matrix = Matrix.getInstance();
 
         if (file != null) {
-            try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file))) {
+            try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file, true))) {
                 bufferedWriter.write(matrix.toString());
+                for(MatrixChangerThread thread : threads) {
+                    bufferedWriter.write("thread " + thread.getName()
+                            + " sum = " + thread.getSum()
+                            + System.lineSeparator());
+                }
+
             } catch (IOException e) {
                 LOG.warn(e);
             }
