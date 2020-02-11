@@ -7,9 +7,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class MatrixReader {
+public class MatrixMetadataReader {
 
-    private static final Logger LOG = LogManager.getLogger(MatrixReader.class);
+    private static final Logger LOG = LogManager.getLogger(MatrixMetadataReader.class);
     private static final int N_INDEX = 0;
     private static final int Y_INDEX = 1;
 
@@ -17,7 +17,7 @@ public class MatrixReader {
     private int n;
     private int y;
 
-    public MatrixReader(String path) {
+    public MatrixMetadataReader(String path) {
         this.path = path;
         readTwoNumbers();
     }
