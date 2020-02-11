@@ -9,8 +9,7 @@ public class MatrixThread extends Thread {
     private static final Logger LOG = LogManager.getLogger(MatrixThread.class);
 
     private int id;
-    private int rowSum;
-    private int columnSum;
+    private int sum;
 
     public MatrixThread(int id) {
         super(String.valueOf(id));
@@ -26,7 +25,6 @@ public class MatrixThread extends Thread {
         while (!matrix.setValue(diagonalIndex, diagonalIndex, id)) {
             diagonalIndex = (int)(Math.random() * matrix.getN());
         }
-        //LOG.trace("thread " + this.getName() + " choose diag " + diagonalIndex);
 
 
         int index = (int)(Math.random() * matrix.getN());
@@ -44,15 +42,27 @@ public class MatrixThread extends Thread {
             LOG.trace("thread " + this.getName() + " choose " + index + ";" + diagonalIndex);
         }
 
-        for (int i = 0; i < matrix.getN(); i++) {
-            rowSum += matrix.getValue(i, diagonalIndex);
-            columnSum += matrix.getValue(diagonalIndex, i);
-        }
+        sum = calculateSumOfRowAndColumn(diagonalIndex);
 
-        LOG.trace("thread " + getName() + " sum = " + (rowSum + columnSum - id));
+        LOG.trace("thread " + getName() + " sum = " + sum);
     }
 
     private boolean isRowChosen() {
         return Math.random() < 0.5;
+    }
+
+    private int calculateSumOfRowAndColumn(int diagonalIndex) {
+        int rowSum = 0;
+        int columnSum = 0;
+        Matrix matrix = Matrix.getInstance();
+        for (int i = 0; i < matrix.getN(); i++) {
+            rowSum += matrix.getValue(i, diagonalIndex);
+            columnSum += matrix.getValue(diagonalIndex, i);
+        }
+        return rowSum + columnSum - matrix.getValue(diagonalIndex, diagonalIndex);
+    }
+
+    public int getSum() {
+        return sum;
     }
 }
