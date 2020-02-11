@@ -43,6 +43,8 @@ public class Runner {
         int n = matrixMetadataReader.getN();
         int y = matrixMetadataReader.getY();
 
+        Matrix.getInstance().initMatrix(n);
+
         MatrixChangerThread[] threads = new MatrixChangerThread[n];
 
         int id = 0;

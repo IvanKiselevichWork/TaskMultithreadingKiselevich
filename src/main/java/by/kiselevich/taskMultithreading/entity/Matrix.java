@@ -1,7 +1,5 @@
 package by.kiselevich.taskMultithreading.entity;
 
-import by.kiselevich.taskMultithreading.constant.ConstantValues;
-
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -13,7 +11,11 @@ public class Matrix {
     private int n;
 
     private Matrix() {
-        n = ConstantValues.N;
+
+    }
+
+    public void initMatrix(int N) {
+        this.n = N;
         data = new int[n][n];
         locks = new Lock[n][n];
         isUsed = new boolean[n][n];
