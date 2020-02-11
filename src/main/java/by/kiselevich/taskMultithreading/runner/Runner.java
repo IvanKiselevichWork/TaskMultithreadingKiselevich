@@ -1,7 +1,7 @@
 package by.kiselevich.taskMultithreading.runner;
 
-import by.kiselevich.taskMultithreading.constant.ConstantValues;
 import by.kiselevich.taskMultithreading.entity.Matrix;
+import by.kiselevich.taskMultithreading.reader.MatrixMetadataReader;
 import by.kiselevich.taskMultithreading.thread.MatrixAndThreadSumWriterThread;
 import by.kiselevich.taskMultithreading.thread.MatrixChangerThread;
 import org.apache.logging.log4j.LogManager;
@@ -14,10 +14,10 @@ import java.util.concurrent.CountDownLatch;
 
 public class Runner {
     private final static Logger LOG = LogManager.getLogger(Runner.class);
-    private final static String OUTPUT_FILE = "output.txt";
-    private final static String INPUT_FILE = "input.txt";
+    private final static String OUTPUT_FILENAME = "output.txt";
+    private final static String INPUT_FILENAME = "input.txt";
 
-    private static File outputFile = new File(OUTPUT_FILE);
+    private static File outputFile = new File(OUTPUT_FILENAME);
     private static File inputFile = null;
     static {
         try {
@@ -29,7 +29,7 @@ public class Runner {
             LOG.warn(e);
         }
 
-        URL inputFileUrl = Runner.class.getClassLoader().getResource(INPUT_FILE);
+        URL inputFileUrl = Runner.class.getClassLoader().getResource(INPUT_FILENAME);
         if (inputFileUrl != null) {
             inputFile = new File(inputFileUrl.getFile());
         } else {
@@ -38,17 +38,23 @@ public class Runner {
     }
 
     public static void main(String[] args) {
-        MatrixChangerThread[] threads = new MatrixChangerThread[ConstantValues.N];
-        int id = 0;
-        for (int i = 0; i < ConstantValues.Y; i++) {
 
-            CountDownLatch latch = new CountDownLatch(ConstantValues.N);
-            for (int j = 0; j < ConstantValues.N; j++) {
+        MatrixMetadataReader matrixMetadataReader = new MatrixMetadataReader(inputFile);
+        int n = matrixMetadataReader.getN();
+        int y = matrixMetadataReader.getY();
+
+        MatrixChangerThread[] threads = new MatrixChangerThread[n];
+
+        int id = 0;
+        for (int i = 0; i < y; i++) {
+
+            CountDownLatch latch = new CountDownLatch(n);
+            for (int j = 0; j < n; j++) {
                 threads[j] = new MatrixChangerThread(id++, latch);
                 threads[j].start();
             }
 
-            for (int j = 0; j < ConstantValues.N; j++) {
+            for (int j = 0; j < n; j++) {
                 try {
                     threads[j].join();
                 } catch (InterruptedException e) {
