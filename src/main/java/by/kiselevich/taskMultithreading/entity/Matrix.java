@@ -8,19 +8,19 @@ public class Matrix {
     private int[][] data;
     private Lock[][] locks;
     private boolean[][] isUsed;
-    private int n;
+    private int size;
 
     private Matrix() {
 
     }
 
-    public void initMatrix(int N) {
-        this.n = N;
-        data = new int[n][n];
-        locks = new Lock[n][n];
-        isUsed = new boolean[n][n];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
+    public void initMatrix(int matrixSize) {
+        this.size = matrixSize;
+        data = new int[size][size];
+        locks = new Lock[size][size];
+        isUsed = new boolean[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 locks[i][j] = new ReentrantLock();
                 isUsed[i][j] = false;
             }
@@ -28,8 +28,8 @@ public class Matrix {
     }
 
     public void resetUseControl() {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 isUsed[i][j] = false;
             }
         }
@@ -43,27 +43,25 @@ public class Matrix {
         return SingletonHolder.INSTANCE;
     }
 
-    public int getN() {
-        return n;
+    public int getSize() {
+        return size;
     }
 
     public boolean setValue(int i, int j, int value) {
-        if (i < n && j < n) {
-            if (locks[i][j].tryLock()) {
-                if (!isUsed[i][j]) {
-                    isUsed[i][j] = true;
-                    data[i][j] = value;
-                    locks[i][j].unlock();
-                    return true;
-                }
+        if (i < size && j < size && locks[i][j].tryLock()) {
+            if (!isUsed[i][j]) {
+                isUsed[i][j] = true;
+                data[i][j] = value;
                 locks[i][j].unlock();
+                return true;
             }
+            locks[i][j].unlock();
         }
         return false;
     }
 
     public int getValue(int i, int j) {
-        if (i < n && j < n) {
+        if (i < size && j < size) {
             return data[i][j];
         } else {
             return 0;
@@ -74,8 +72,8 @@ public class Matrix {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("\n");
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 stringBuilder.append(String.format("%4d", data[i][j]));
             }
             stringBuilder.append("\n");

@@ -25,23 +25,23 @@ public class MatrixChangerThread extends Thread {
         Matrix matrix = Matrix.getInstance();
 
         int diagonalIndex;
-        diagonalIndex = (int)(Math.random() * matrix.getN());
+        diagonalIndex = (int)(Math.random() * matrix.getSize());
         while (!matrix.setValue(diagonalIndex, diagonalIndex, id)) {
-            diagonalIndex = (int)(Math.random() * matrix.getN());
+            diagonalIndex = (int)(Math.random() * matrix.getSize());
         }
 
 
-        int index = (int)(Math.random() * matrix.getN());
+        int index = (int)(Math.random() * matrix.getSize());
         if (isRowChosen()) {
             while (index == diagonalIndex || !matrix.setValue(diagonalIndex, index, id)) {
                 LOG.trace("thread " + this.getName() + " trying ");
-                index = (int)(Math.random() * matrix.getN());
+                index = (int)(Math.random() * matrix.getSize());
             }
             LOG.trace("thread " + this.getName() + " choose " + diagonalIndex + ";" + index);
         } else {
             while (index == diagonalIndex || !matrix.setValue(index, diagonalIndex, id)) {
                 LOG.trace("thread " + this.getName() + " trying ");
-                index = (int)(Math.random() * matrix.getN());
+                index = (int)(Math.random() * matrix.getSize());
             }
             LOG.trace("thread " + this.getName() + " choose " + index + ";" + diagonalIndex);
         }
@@ -65,7 +65,7 @@ public class MatrixChangerThread extends Thread {
         int rowSum = 0;
         int columnSum = 0;
         Matrix matrix = Matrix.getInstance();
-        for (int i = 0; i < matrix.getN(); i++) {
+        for (int i = 0; i < matrix.getSize(); i++) {
             rowSum += matrix.getValue(i, diagonalIndex);
             columnSum += matrix.getValue(diagonalIndex, i);
         }
