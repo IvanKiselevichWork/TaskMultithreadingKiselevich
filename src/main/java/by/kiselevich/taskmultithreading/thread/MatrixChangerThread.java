@@ -35,16 +35,16 @@ public class MatrixChangerThread extends Thread {
         int index = new Random().nextInt(matrix.getSize());
         if (isRowChosen()) {
             while (index == diagonalIndex || !matrix.setValue(diagonalIndex, index, id)) {
-                LOG.trace("thread " + this.getName() + " trying ");
+                LOG.trace("thread {} trying ", this.getName());
                 index = new Random().nextInt(matrix.getSize());
             }
-            LOG.trace("thread " + this.getName() + " choose " + diagonalIndex + ";" + index);
+            LOG.trace("thread {} choose {};{}", getName(), diagonalIndex, index);
         } else {
             while (index == diagonalIndex || !matrix.setValue(index, diagonalIndex, id)) {
-                LOG.trace("thread " + this.getName() + " trying ");
+                LOG.trace("thread {} trying ", this.getName());
                 index = new Random().nextInt(matrix.getSize());
             }
-            LOG.trace("thread " + this.getName() + " choose " + index + ";" + diagonalIndex);
+            LOG.trace("thread {} choose {};{}", getName(), index, diagonalIndex);
         }
 
         latch.countDown();
@@ -56,7 +56,7 @@ public class MatrixChangerThread extends Thread {
         }
         sum = calculateSumOfRowAndColumn(diagonalIndex);
 
-        LOG.trace("thread " + getName() + " sum = " + sum);
+        LOG.trace("thread {} sum = {}", getName(), sum);
     }
 
     private boolean isRowChosen() {
