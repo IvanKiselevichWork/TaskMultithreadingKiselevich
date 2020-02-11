@@ -1,4 +1,4 @@
-package by.kiselevich.taskMultithreading.reader;
+package by.kiselevich.taskMultithreading1.reader;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -1,6 +1,6 @@
-package by.kiselevich.taskMultithreading.thread;
+package by.kiselevich.taskMultithreading1.thread;
 
-import by.kiselevich.taskMultithreading.entity.Matrix;
+import by.kiselevich.taskMultithreading1.entity.Matrix;
 
 public class MatrixUseControlReseterThread extends Thread {
 

@@ -1,6 +1,6 @@
-package by.kiselevich.taskMultithreading.thread;
+package by.kiselevich.taskMultithreading1.thread;
 
-import by.kiselevich.taskMultithreading.entity.Matrix;
+import by.kiselevich.taskMultithreading1.entity.Matrix;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
