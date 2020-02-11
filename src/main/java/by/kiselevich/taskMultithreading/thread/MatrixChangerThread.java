@@ -4,14 +4,14 @@ import by.kiselevich.taskMultithreading.entity.Matrix;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class MatrixThread extends Thread {
+public class MatrixChangerThread extends Thread {
 
-    private static final Logger LOG = LogManager.getLogger(MatrixThread.class);
+    private static final Logger LOG = LogManager.getLogger(MatrixChangerThread.class);
 
     private int id;
     private int sum;
 
-    public MatrixThread(int id) {
+    public MatrixChangerThread(int id) {
         super(String.valueOf(id));
         this.id = id;
     }

@@ -2,7 +2,7 @@ package by.kiselevich.taskMultithreading.runner;
 
 import by.kiselevich.taskMultithreading.constant.ConstantValues;
 import by.kiselevich.taskMultithreading.entity.Matrix;
-import by.kiselevich.taskMultithreading.thread.MatrixThread;
+import by.kiselevich.taskMultithreading.thread.MatrixChangerThread;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,7 +15,7 @@ public class Runner {
         int id = 0;
         for (int i = 0; i < ConstantValues.Y; i++) {
             for (int j = 0; j < ConstantValues.N; j++) {
-                threads[j] = new MatrixThread(id++);
+                threads[j] = new MatrixChangerThread(id++);
             }
             for (int j = 0; j < ConstantValues.N; j++) {
                 threads[j].start();
