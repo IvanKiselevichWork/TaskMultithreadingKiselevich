@@ -1,4 +1,4 @@
-package by.kiselevich.taskMultithreading1.entity;
+package by.kiselevich.taskmultithreading.entity;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;

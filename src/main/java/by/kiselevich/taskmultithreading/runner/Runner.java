@@ -1,11 +1,11 @@
-package by.kiselevich.taskMultithreading1.runner;
+package by.kiselevich.taskmultithreading.runner;
 
-import by.kiselevich.taskMultithreading1.entity.Matrix;
-import by.kiselevich.taskMultithreading1.reader.MatrixMetadataReader;
-import by.kiselevich.taskMultithreading1.thread.MatrixAndThreadSumWriterThread;
-import by.kiselevich.taskMultithreading1.thread.MatrixChangerThread;
-import by.kiselevich.taskMultithreading1.thread.MatrixInitiatorThread;
-import by.kiselevich.taskMultithreading1.thread.MatrixUseControlReseterThread;
+import by.kiselevich.taskmultithreading.entity.Matrix;
+import by.kiselevich.taskmultithreading.reader.MatrixMetadataReader;
+import by.kiselevich.taskmultithreading.thread.MatrixAndThreadSumWriterThread;
+import by.kiselevich.taskmultithreading.thread.MatrixChangerThread;
+import by.kiselevich.taskmultithreading.thread.MatrixInitiatorThread;
+import by.kiselevich.taskmultithreading.thread.MatrixUseControlReseterThread;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
