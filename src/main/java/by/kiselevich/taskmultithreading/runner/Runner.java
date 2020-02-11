@@ -12,6 +12,9 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.concurrent.CountDownLatch;
 
 public class Runner {
@@ -23,10 +26,7 @@ public class Runner {
     private static File inputFile = null;
     static {
         try {
-            if (outputFile.exists()) {
-                outputFile.delete();
-            }
-            outputFile.createNewFile();
+            Files.write(Paths.get(outputFile.toURI()), "".getBytes(), StandardOpenOption.CREATE_NEW);
         } catch (IOException e) {
             LOG.warn(e);
         }
