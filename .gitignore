@@ -29,3 +29,6 @@ target/
 out/
 .idea/
 *.iml
+
+# custom
+output.txt
