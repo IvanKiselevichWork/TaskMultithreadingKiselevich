@@ -47,7 +47,7 @@ public class MatrixMetadataReader {
                         n = Integer.parseInt(numbersStringArray[N_INDEX]);
                         y = Integer.parseInt(numbersStringArray[Y_INDEX]);
                     } else {
-                        LOG.warn("Cant read matrix metadata, string = <" + line + ">");
+                        LOG.warn("Cant read matrix metadata, string = {}", line);
                     }
                 } else {
                     LOG.warn("Matrix metadata is empty");
