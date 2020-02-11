@@ -33,4 +33,12 @@ public class MatrixWriterThread extends Thread {
             LOG.warn("No file to write matrix");
         }
     }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
+
+    public File getFile() {
+        return file;
+    }
 }
