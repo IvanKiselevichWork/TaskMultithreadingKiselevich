@@ -4,6 +4,7 @@ import by.kiselevich.taskmultithreading.entity.Matrix;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
 public class MatrixChangerThread extends Thread {
@@ -25,23 +26,23 @@ public class MatrixChangerThread extends Thread {
         Matrix matrix = Matrix.getInstance();
 
         int diagonalIndex;
-        diagonalIndex = (int)(Math.random() * matrix.getSize());
+        diagonalIndex = new Random().nextInt(matrix.getSize());
         while (!matrix.setValue(diagonalIndex, diagonalIndex, id)) {
-            diagonalIndex = (int)(Math.random() * matrix.getSize());
+            diagonalIndex = new Random().nextInt(matrix.getSize());
         }
 
 
-        int index = (int)(Math.random() * matrix.getSize());
+        int index = new Random().nextInt(matrix.getSize());
         if (isRowChosen()) {
             while (index == diagonalIndex || !matrix.setValue(diagonalIndex, index, id)) {
                 LOG.trace("thread " + this.getName() + " trying ");
-                index = (int)(Math.random() * matrix.getSize());
+                index = new Random().nextInt(matrix.getSize());
             }
             LOG.trace("thread " + this.getName() + " choose " + diagonalIndex + ";" + index);
         } else {
             while (index == diagonalIndex || !matrix.setValue(index, diagonalIndex, id)) {
                 LOG.trace("thread " + this.getName() + " trying ");
-                index = (int)(Math.random() * matrix.getSize());
+                index = new Random().nextInt(matrix.getSize());
             }
             LOG.trace("thread " + this.getName() + " choose " + index + ";" + diagonalIndex);
         }
@@ -51,6 +52,7 @@ public class MatrixChangerThread extends Thread {
             latch.await();
         } catch (InterruptedException e) {
             LOG.warn(e);
+            Thread.currentThread().interrupt();
         }
         sum = calculateSumOfRowAndColumn(diagonalIndex);
 
@@ -58,7 +60,7 @@ public class MatrixChangerThread extends Thread {
     }
 
     private boolean isRowChosen() {
-        return Math.random() < 0.5;
+        return new Random().nextDouble() < 0.5;
     }
 
     private int calculateSumOfRowAndColumn(int diagonalIndex) {
