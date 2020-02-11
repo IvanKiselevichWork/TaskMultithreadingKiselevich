@@ -4,6 +4,8 @@ import by.kiselevich.taskMultithreading.entity.Matrix;
 import by.kiselevich.taskMultithreading.reader.MatrixMetadataReader;
 import by.kiselevich.taskMultithreading.thread.MatrixAndThreadSumWriterThread;
 import by.kiselevich.taskMultithreading.thread.MatrixChangerThread;
+import by.kiselevich.taskMultithreading.thread.MatrixInitiatorThread;
+import by.kiselevich.taskMultithreading.thread.MatrixUseControlReseterThread;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,7 +45,13 @@ public class Runner {
         int n = matrixMetadataReader.getN();
         int y = matrixMetadataReader.getY();
 
-        Matrix.getInstance().initMatrix(n);
+        MatrixInitiatorThread matrixInitiator = new MatrixInitiatorThread(n);
+        matrixInitiator.start();
+        try {
+            matrixInitiator.join();
+        } catch (InterruptedException e) {
+            LOG.warn(e);
+        }
 
         MatrixChangerThread[] threads = new MatrixChangerThread[n];
 
@@ -65,7 +73,13 @@ public class Runner {
             }
 
             LOG.trace(Matrix.getInstance().toString());
-            Matrix.getInstance().resetUseControl();
+            MatrixUseControlReseterThread matrixReseter = new MatrixUseControlReseterThread();
+            matrixReseter.start();
+            try {
+                matrixReseter.join();
+            } catch (InterruptedException e) {
+                LOG.warn(e);
+            }
 
             Thread writer = new MatrixAndThreadSumWriterThread(outputFile, threads);
             writer.start();
@@ -75,6 +89,5 @@ public class Runner {
                 LOG.warn(e);
             }
         }
-
     }
 }
