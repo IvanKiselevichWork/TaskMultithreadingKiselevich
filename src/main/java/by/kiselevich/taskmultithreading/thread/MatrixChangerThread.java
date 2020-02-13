@@ -5,7 +5,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Random;
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 
 public class MatrixChangerThread extends Thread {
 
@@ -14,11 +16,13 @@ public class MatrixChangerThread extends Thread {
     private int id;
     private int sum;
     private CountDownLatch latch;
+    private CyclicBarrier cyclicBarrier;
 
-    public MatrixChangerThread(int id, CountDownLatch latch) {
+    public MatrixChangerThread(int id, CountDownLatch latch, CyclicBarrier cyclicBarrier) {
         super(String.valueOf(id));
         this.id = id;
         this.latch = latch;
+        this.cyclicBarrier = cyclicBarrier;
     }
 
     @Override
@@ -35,16 +39,12 @@ public class MatrixChangerThread extends Thread {
         int index = new Random().nextInt(matrix.getSize());
         if (isRowChosen()) {
             while (index == diagonalIndex || !matrix.setValue(diagonalIndex, index, id)) {
-                LOG.trace("thread {} trying ", this.getName());
                 index = new Random().nextInt(matrix.getSize());
             }
-            LOG.trace("thread {} choose {};{}", getName(), diagonalIndex, index);
         } else {
             while (index == diagonalIndex || !matrix.setValue(index, diagonalIndex, id)) {
-                LOG.trace("thread {} trying ", this.getName());
                 index = new Random().nextInt(matrix.getSize());
             }
-            LOG.trace("thread {} choose {};{}", getName(), index, diagonalIndex);
         }
 
         latch.countDown();
@@ -54,9 +54,15 @@ public class MatrixChangerThread extends Thread {
             LOG.warn(e);
             Thread.currentThread().interrupt();
         }
+
         sum = calculateSumOfRowAndColumn(diagonalIndex);
 
-        LOG.trace("thread {} sum = {}", getName(), sum);
+        try {
+            cyclicBarrier.await();
+        } catch (InterruptedException | BrokenBarrierException e) {
+            LOG.warn(e);
+            Thread.currentThread().interrupt();
+        }
     }
 
     private boolean isRowChosen() {

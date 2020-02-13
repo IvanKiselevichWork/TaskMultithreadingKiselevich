@@ -1,11 +1,9 @@
 package by.kiselevich.taskmultithreading.runner;
 
-import by.kiselevich.taskmultithreading.entity.Matrix;
 import by.kiselevich.taskmultithreading.reader.MatrixMetadataReader;
-import by.kiselevich.taskmultithreading.thread.MatrixAndThreadSumWriterThread;
+import by.kiselevich.taskmultithreading.thread.MatrixWriterAndReseterThread;
 import by.kiselevich.taskmultithreading.thread.MatrixChangerThread;
 import by.kiselevich.taskmultithreading.thread.MatrixInitiatorThread;
-import by.kiselevich.taskmultithreading.thread.MatrixUseControlReseterThread;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 
 public class Runner {
     private static final Logger LOG = LogManager.getLogger(Runner.class);
@@ -26,7 +25,7 @@ public class Runner {
     private static File inputFile = null;
     static {
         try {
-            Files.write(Paths.get(outputFile.toURI()), "".getBytes(), StandardOpenOption.CREATE_NEW);
+            Files.write(Paths.get(outputFile.toURI()), "".getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
             LOG.warn(e);
         }
@@ -55,13 +54,16 @@ public class Runner {
         }
 
         MatrixChangerThread[] threads = new MatrixChangerThread[n];
+        CyclicBarrier writerAndReseterBarrier = new CyclicBarrier(n,
+                new MatrixWriterAndReseterThread(outputFile, threads)
+            );
 
         int id = 0;
         for (int i = 0; i < y; i++) {
 
-            CountDownLatch latch = new CountDownLatch(n);
+            CountDownLatch syncLatch = new CountDownLatch(n);
             for (int j = 0; j < n; j++) {
-                threads[j] = new MatrixChangerThread(id++, latch);
+                threads[j] = new MatrixChangerThread(id++, syncLatch, writerAndReseterBarrier);
                 threads[j].start();
             }
 
@@ -72,25 +74,6 @@ public class Runner {
                     LOG.warn(e);
                     Thread.currentThread().interrupt();
                 }
-            }
-
-            LOG.trace(Matrix.getInstance().toString());
-            MatrixUseControlReseterThread matrixReseter = new MatrixUseControlReseterThread();
-            matrixReseter.start();
-            try {
-                matrixReseter.join();
-            } catch (InterruptedException e) {
-                LOG.warn(e);
-                Thread.currentThread().interrupt();
-            }
-
-            Thread writer = new MatrixAndThreadSumWriterThread(outputFile, threads);
-            writer.start();
-            try {
-                writer.join();
-            } catch (InterruptedException e) {
-                LOG.warn(e);
-                Thread.currentThread().interrupt();
             }
         }
     }

@@ -9,14 +9,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class MatrixAndThreadSumWriterThread extends Thread {
+public class MatrixWriterAndReseterThread implements Runnable {
 
-    private static final Logger LOG = LogManager.getLogger(MatrixAndThreadSumWriterThread.class);
+    private static final Logger LOG = LogManager.getLogger(MatrixWriterAndReseterThread.class);
 
     private File file;
     private MatrixChangerThread[] threads;
 
-    public MatrixAndThreadSumWriterThread(File file, MatrixChangerThread[] threads) {
+    public MatrixWriterAndReseterThread(File file, MatrixChangerThread[] threads) {
         this.file = file;
         this.threads = threads;
     }
@@ -24,7 +24,7 @@ public class MatrixAndThreadSumWriterThread extends Thread {
     @Override
     public void run() {
         Matrix matrix = Matrix.getInstance();
-
+        matrix.resetUseControl();
         if (file != null) {
             try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file, true))) {
                 bufferedWriter.write(matrix.toString());
