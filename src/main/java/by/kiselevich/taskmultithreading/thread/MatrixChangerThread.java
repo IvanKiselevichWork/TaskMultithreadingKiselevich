@@ -31,18 +31,18 @@ public class MatrixChangerThread extends Thread {
 
         int diagonalIndex;
         diagonalIndex = new Random().nextInt(matrix.getSize());
-        while (!matrix.setValue(diagonalIndex, diagonalIndex, id)) {
+        while (!matrix.trySetValue(diagonalIndex, diagonalIndex, id)) {
             diagonalIndex = new Random().nextInt(matrix.getSize());
         }
 
 
         int index = new Random().nextInt(matrix.getSize());
         if (isRowChosen()) {
-            while (index == diagonalIndex || !matrix.setValue(diagonalIndex, index, id)) {
+            while (index == diagonalIndex || !matrix.trySetValue(diagonalIndex, index, id)) {
                 index = new Random().nextInt(matrix.getSize());
             }
         } else {
-            while (index == diagonalIndex || !matrix.setValue(index, diagonalIndex, id)) {
+            while (index == diagonalIndex || !matrix.trySetValue(index, diagonalIndex, id)) {
                 index = new Random().nextInt(matrix.getSize());
             }
         }
