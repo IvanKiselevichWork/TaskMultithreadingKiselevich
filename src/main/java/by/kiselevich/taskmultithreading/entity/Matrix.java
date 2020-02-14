@@ -1,5 +1,7 @@
 package by.kiselevich.taskmultithreading.entity;
 
+import by.kiselevich.taskmultithreading.exception.IndexOutOfMaxtrixBoundsException;
+
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -54,24 +56,29 @@ public class Matrix {
         return size;
     }
 
-    public boolean trySetValue(int i, int j, int value) {
-        if (i < size && j < size && cells[i][j].lock.tryLock()) {
-            if (!cells[i][j].isUsed) {
-                cells[i][j].isUsed = true;
-                cells[i][j].value = value;
-                cells[i][j].lock.unlock();
+    public boolean trySetValue(int i, int j, int value) throws IndexOutOfMaxtrixBoundsException {
+        checkBounds(i, j);
+        Element currentElement = cells[i][j];
+        if (currentElement.lock.tryLock()) {
+            if (!currentElement.isUsed) {
+                currentElement.isUsed = true;
+                currentElement.value = value;
+                currentElement.lock.unlock();
                 return true;
             }
-            cells[i][j].lock.unlock();
+            currentElement.lock.unlock();
         }
         return false;
     }
 
-    public int getValue(int i, int j) {
-        if (i < size && j < size) {
-            return cells[i][j].value;
-        } else {
-            return 0;
+    public int getValue(int i, int j) throws IndexOutOfMaxtrixBoundsException {
+        checkBounds(i, j);
+        return cells[i][j].value;
+    }
+
+    private void checkBounds(int i, int j) throws IndexOutOfMaxtrixBoundsException {
+        if (i >= size || j >= size) {
+            throw new IndexOutOfMaxtrixBoundsException();
         }
     }
 
