@@ -25,7 +25,7 @@ public class Runner {
     private static File inputFile = null;
     static {
         try {
-            Files.write(Paths.get(outputFile.toURI()), "".getBytes(), StandardOpenOption.TRUNCATE_EXISTING);
+            Files.write(Paths.get(outputFile.toURI()), "".getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
             LOG.warn(e);
         }
