@@ -9,14 +9,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class MatrixWriterAndReseterThread implements Runnable {
+public class ResultsWriterThread extends Thread {
 
-    private static final Logger LOG = LogManager.getLogger(MatrixWriterAndReseterThread.class);
+
+    private static final Logger LOG = LogManager.getLogger(ResultsWriterThread.class);
 
     private File file;
     private MatrixChangerThread[] threads;
 
-    public MatrixWriterAndReseterThread(File file, MatrixChangerThread[] threads) {
+    public ResultsWriterThread(File file, MatrixChangerThread[] threads) {
         this.file = file;
         this.threads = threads;
     }
@@ -24,7 +25,6 @@ public class MatrixWriterAndReseterThread implements Runnable {
     @Override
     public void run() {
         Matrix matrix = Matrix.getInstance();
-        matrix.resetUseControl();
         if (file != null) {
             try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file, true))) {
                 bufferedWriter.write(matrix.toString());
@@ -40,13 +40,5 @@ public class MatrixWriterAndReseterThread implements Runnable {
         } else {
             LOG.warn("No file to write matrix");
         }
-    }
-
-    public void setFile(File file) {
-        this.file = file;
-    }
-
-    public File getFile() {
-        return file;
     }
 }

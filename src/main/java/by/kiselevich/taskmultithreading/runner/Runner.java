@@ -1,7 +1,7 @@
 package by.kiselevich.taskmultithreading.runner;
 
 import by.kiselevich.taskmultithreading.reader.MatrixMetadataReader;
-import by.kiselevich.taskmultithreading.thread.MatrixWriterAndReseterThread;
+import by.kiselevich.taskmultithreading.thread.MatrixResultPerformerThread;
 import by.kiselevich.taskmultithreading.thread.MatrixChangerThread;
 import by.kiselevich.taskmultithreading.thread.MatrixInitiatorThread;
 import org.apache.logging.log4j.LogManager;
@@ -54,16 +54,14 @@ public class Runner {
         }
 
         MatrixChangerThread[] threads = new MatrixChangerThread[n];
-        CyclicBarrier writerAndReseterBarrier = new CyclicBarrier(n,
-                new MatrixWriterAndReseterThread(outputFile, threads)
-            );
+        CyclicBarrier matrixResultPerformerBarrier = new CyclicBarrier(n, new MatrixResultPerformerThread(outputFile, threads));
 
         int id = 0;
         for (int i = 0; i < y; i++) {
 
             CountDownLatch syncLatch = new CountDownLatch(n);
             for (int j = 0; j < n; j++) {
-                threads[j] = new MatrixChangerThread(id++, syncLatch, writerAndReseterBarrier);
+                threads[j] = new MatrixChangerThread(id++, syncLatch, matrixResultPerformerBarrier);
                 threads[j].start();
             }
 
