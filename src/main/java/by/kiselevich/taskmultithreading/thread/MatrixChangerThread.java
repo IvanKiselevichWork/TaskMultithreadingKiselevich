@@ -1,6 +1,7 @@
 package by.kiselevich.taskmultithreading.thread;
 
 import by.kiselevich.taskmultithreading.entity.Matrix;
+import by.kiselevich.taskmultithreading.exception.IndexOutOfMaxtrixBoundsException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,69 +16,89 @@ public class MatrixChangerThread extends Thread {
 
     private int id;
     private int sum;
-    private CountDownLatch latch;
-    private CyclicBarrier cyclicBarrier;
+    private CountDownLatch latchBeforeCalculateSum;
+    private CyclicBarrier barrierBeforeWriteMatrixAndSum;
+    private Matrix matrix;
 
-    public MatrixChangerThread(int id, CountDownLatch latch, CyclicBarrier cyclicBarrier) {
+    public MatrixChangerThread(int id, CountDownLatch latchBeforeCalculateSum, CyclicBarrier barrierBeforeWriteMatrixAndSum) {
         super(String.valueOf(id));
         this.id = id;
-        this.latch = latch;
-        this.cyclicBarrier = cyclicBarrier;
+        this.latchBeforeCalculateSum = latchBeforeCalculateSum;
+        this.barrierBeforeWriteMatrixAndSum = barrierBeforeWriteMatrixAndSum;
+        matrix = Matrix.getInstance();
     }
 
     @Override
     public void run() {
-        Matrix matrix = Matrix.getInstance();
 
-        int diagonalIndex;
-        diagonalIndex = new Random().nextInt(matrix.getSize());
-        while (!matrix.trySetValue(diagonalIndex, diagonalIndex, id)) {
-            diagonalIndex = new Random().nextInt(matrix.getSize());
-        }
-
-
-        int index = new Random().nextInt(matrix.getSize());
-        if (isRowChosen()) {
-            while (index == diagonalIndex || !matrix.trySetValue(diagonalIndex, index, id)) {
-                index = new Random().nextInt(matrix.getSize());
-            }
-        } else {
-            while (index == diagonalIndex || !matrix.trySetValue(index, diagonalIndex, id)) {
-                index = new Random().nextInt(matrix.getSize());
-            }
-        }
-
-        latch.countDown();
         try {
-            latch.await();
-        } catch (InterruptedException e) {
+            int diagonalIndex = setMatrixDiagonalValue();
+
+            if (isRowChosen()) {
+                setMatrixRowValue(diagonalIndex);
+            } else {
+                setMatrixColumnValue(diagonalIndex);
+            }
+
+            latchBeforeCalculateSum.countDown();
+            latchBeforeCalculateSum.await();
+
+            sum = calculateSumOfRowAndColumn(diagonalIndex);
+
+            barrierBeforeWriteMatrixAndSum.await();
+
+        } catch (IndexOutOfMaxtrixBoundsException e) {
+            LOG.error(e);
+        } catch (BrokenBarrierException e) {
             LOG.warn(e);
-            Thread.currentThread().interrupt();
-        }
-
-        sum = calculateSumOfRowAndColumn(diagonalIndex);
-
-        try {
-            cyclicBarrier.await();
-        } catch (InterruptedException | BrokenBarrierException e) {
+        } catch (InterruptedException e) {
             LOG.warn(e);
             Thread.currentThread().interrupt();
         }
     }
 
+    private void setMatrixRowValue(int diagonalIndex) throws IndexOutOfMaxtrixBoundsException {
+        int index = getRandomIndex(matrix.getSize());
+        while (index == diagonalIndex || !matrix.trySetValue(diagonalIndex, index, id)) {
+            index = getRandomIndex(matrix.getSize());
+        }
+    }
+
+    private void setMatrixColumnValue(int diagonalIndex) throws IndexOutOfMaxtrixBoundsException {
+        int index = getRandomIndex(matrix.getSize());
+        while (index == diagonalIndex || !matrix.trySetValue(index, diagonalIndex, id)) {
+            index = getRandomIndex(matrix.getSize());
+        }
+    }
+
     private boolean isRowChosen() {
-        return new Random().nextDouble() < 0.5;
+        return new Random().nextBoolean();
+    }
+
+    private int setMatrixDiagonalValue() throws IndexOutOfMaxtrixBoundsException {
+        int diagonalIndex = getRandomIndex(matrix.getSize());
+        while (!matrix.trySetValue(diagonalIndex, diagonalIndex, id)) {
+            diagonalIndex = getRandomIndex(matrix.getSize());
+        }
+        return diagonalIndex;
+    }
+
+    private int getRandomIndex(int maxValue) {
+        return new Random().nextInt(maxValue);
     }
 
     private int calculateSumOfRowAndColumn(int diagonalIndex) {
         int rowSum = 0;
         int columnSum = 0;
-        Matrix matrix = Matrix.getInstance();
         for (int i = 0; i < matrix.getSize(); i++) {
-            rowSum += matrix.getValue(i, diagonalIndex);
-            columnSum += matrix.getValue(diagonalIndex, i);
+            try {
+                rowSum += matrix.getValue(i, diagonalIndex);
+                columnSum += matrix.getValue(diagonalIndex, i);
+            } catch (IndexOutOfMaxtrixBoundsException e) {
+                LOG.warn(e);
+            }
         }
-        return rowSum + columnSum - matrix.getValue(diagonalIndex, diagonalIndex);
+        return rowSum + columnSum - id;
     }
 
     public int getSum() {
