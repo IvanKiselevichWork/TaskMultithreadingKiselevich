@@ -60,13 +60,15 @@ public class Matrix {
         checkBounds(i, j);
         Element currentElement = cells[i][j];
         if (currentElement.lock.tryLock()) {
-            if (!currentElement.isUsed) {
-                currentElement.isUsed = true;
-                currentElement.value = value;
+            try {
+                if (!currentElement.isUsed) {
+                    currentElement.isUsed = true;
+                    currentElement.value = value;
+                    return true;
+                }
+            } finally {
                 currentElement.lock.unlock();
-                return true;
             }
-            currentElement.lock.unlock();
         }
         return false;
     }
